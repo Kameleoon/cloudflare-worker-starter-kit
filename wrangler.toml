@@ -1,3 +1,4 @@
 name = "cloudflare-worker-starter-kit"
 main = "src/index.ts"
-compatibility_date = "2023-02-22"
+compatibility_date = "2023-02-21"
+account_id = ""
