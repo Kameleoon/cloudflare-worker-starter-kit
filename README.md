@@ -2,11 +2,11 @@
 
 > Template to run Kameleoon Experimentation and Feature Flags on [Cloudflare Workers](https://workers.cloudflare.com).
 
-This Kameleoon Template for Cloudflare Workers uses and extends our [Kameleoon JS SDK](https://developers.kameleoon.com/javascript-sdk.html) to provide experimentation and feature flagging on the edge. Without this template, the JS SDK cannot be used with Cloudflare. For more information on how to run Feature Flags and Experiments with our platform follow the steps outlined in our documentation [here](https://developers.kameleoon.com/javascript-sdk.html).
+This Kameleoon Template for Cloudflare Workers uses and extends our [Kameleoon NodeJS SDK](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk) to provide experimentation and feature flagging on the edge. Without this template, the NodeJS SDK cannot be used with Cloudflare. For more information on how to run Feature Flags and Experiments with our platform follow the steps outlined in our documentation [here](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk).
 
 ### Configuration Data File
 
-The `configDataFile` is a JSON representation of feature flags and experiments. It contains all the data needed to deliver and track your flag deliveries and experiments. Template uses Cloudflare cache API to provide caching for `configDataFile` with custom `ttl`.
+The `externalClientConfiguration` is a JSON representation of feature flags and experiments. It contains all the data needed to deliver and track your flag deliveries and experiments. Template uses Cloudflare cache API to provide caching for `externalClientConfiguration` with custom `ttl`.
 
 ## How to use
 
@@ -59,4 +59,4 @@ wrangler tail
 - [Cloudflare Workers](https://workers.cloudflare.com)
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers)
 - [Cloudflare Workers Tutorials](https://developers.cloudflare.com/workers/tutorials)
-- [Kameleoon JS SDK Documentation](https://developers.kameleoon.com/javascript-sdk.html)
+- [Kameleoon NodeJS SDK Documentation](https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk)
