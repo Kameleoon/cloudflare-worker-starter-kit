@@ -14,7 +14,7 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
-    "@kameleoon/nodejs-sdk": "^2.6.3",
+    "@kameleoon/nodejs-sdk": "^2.7.0",
     "cookie": "^0.5.0",
     "uuid": "^9.0.0"
   }

@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import cookie from "cookie";
-import { KameleoonClient } from "@kameleoon/nodejs-sdk";
+import { KameleoonClient, KameleoonUtils } from "@kameleoon/nodejs-sdk";
 import { getConfigDataFile } from "./helpers";
 
 const KAMELEOON_USER_ID = "kameleoon_user_id";
@@ -18,8 +18,11 @@ async function handleRequest(event: FetchEvent) {
   // Get the siteCode from Kameleoon Platform
   const siteCode = "YOUR_SITE_CODE";
 
-  // Fetch config file from Kameleoon CDN and cache it using cloudflare for given number of seconds
-  const configDataFile = await getConfigDataFile(siteCode, 600);
+  // Get the Kameleoon Client Configuration URL from KameleoonUtils
+  const url = KameleoonUtils.getClientConfigurationUrl(siteCode);
+
+  // Fetch config file from Kameleoon Client Configuration URL and cache it using cloudflare for given number of seconds
+  const configDataFile = await getConfigDataFile(url, 600);
   const parsedConfigDataFile = JSON.parse(configDataFile);
 
   // Initialize the KameleoonClient
