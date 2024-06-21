@@ -63,7 +63,7 @@ npm run deploy
 The core integration logic is located in `src/index.ts` file. The worker uses the [Kameleoon NodeJS SDK][2] to fetch the feature flags and experiments from the Kameleoon platform, initialize the SDK and evaluate the flags and experiments.
 
 There are also several additional files which implement external SDK dependency to make it compatible with Cloudflare Workers and grant some additional features:
-- `src/eventSource.ts` - `EventSource` implementation for Cloudflare Workers. Unfortunately, Cloudflare Workers do not support `EventSource` out of the box, so the implementation will just give out a warning message in the console if you try to use the unsupported [Real Time Update] feature.
+- `src/eventSource.ts` - `EventSource` implementation for Cloudflare Workers. Unfortunately, Cloudflare Workers do not support `EventSource` out of the box, so the implementation will just give out a warning message in the console if you try to use the unsupported [Real Time Update][10] feature.
 - `src/requester.ts` - `Requester` implementation adds an ability to cache SDK configuration providing the desired TTL.
 > Note: by default SDK will poll the configuration every `60` minutes and the `ttl` value provided in `src/index.ts` is also `60` minutes, feel free to tweak both `ttl` and [`updateInterval`][8] values.
 - `src/visitorCodeManager.ts` - `VisitorCodeManager` implementation for Cloudflare Workers allows for smooth `getVisitorCode` operations, it reads `kameleoonVisitorCode` from request headers and if it wasn't found it generates a new one and sets it in the response headers.
@@ -88,3 +88,4 @@ Error handling is omitted in the code for the sake of simplicity, however it's a
 [7]: https://app.kameleoon.com/featureFlags/dashboard
 [8]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk#:~:text=Default%20Value-,updateInterval,-(optional)
 [9]: https://developers.kameleoon.com/feature-management-and-experimentation/web-sdks/nodejs-sdk#error-handling
+[10]: https://developers.kameleoon.com/feature-management-and-experimentation/technical-considerations#streaming-premium-option
