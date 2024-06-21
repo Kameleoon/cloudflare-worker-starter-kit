@@ -5,6 +5,14 @@ All notable changes to this Cloudflare Workers Template project will be document
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.0.0] - June 21, 2024
+
+### Changed
+
+- Bump @kameleoon/nodejs-sdk version to 4.4.0
+- Full rework of the integration
+
 ## [0.2.2] - September 26, 2023
 
 ### Changed

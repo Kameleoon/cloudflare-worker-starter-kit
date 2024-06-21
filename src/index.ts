@@ -1,58 +1,64 @@
-import { v4 } from "uuid";
-import cookie from "cookie";
-import { KameleoonClient, KameleoonUtils } from "@kameleoon/nodejs-sdk";
-import { getConfigDataFile } from "./helpers";
+import { KameleoonClient } from "@kameleoon/nodejs-sdk";
+import { WorkerRequester } from "./requester";
+import { WorkerVisitorCodeManager } from "./visitorCodeManager";
+import { WorkerEventSource } from "./eventSource";
 
-const KAMELEOON_USER_ID = "kameleoon_user_id";
+// -- Define constant values
+const SITE_CODE = "my_site_code";
+const CLIENT_ID = "my_client_id";
+const CLIENT_SECRET = "my_client_secret";
+const FEATURE_KEY = "my_feature_key";
 
+// -- Handle incoming requests
 addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event));
 });
 
+// -- Cache the Kameleoon client between requests
+let client: KameleoonClient;
+let isInitialized = false;
+
 async function handleRequest(event: FetchEvent) {
-  const cookies = cookie.parse(event.request.headers.get("Cookie") || "");
+  // -- Create and initialize the Kameleoon client
+  if (!client) {
+    client = new KameleoonClient({
+      siteCode: SITE_CODE,
+      credentials: {
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+      },
+      externals: {
+        // - Setting the SDK configuration cache TTL to 60 minutes (3600 seconds)
+        requester: new WorkerRequester(3600),
+        eventSource: new WorkerEventSource(),
+        visitorCodeManager: new WorkerVisitorCodeManager(),
+      },
+    });
+  }
 
-  // Fetch user id from the cookie if available to make sure that results are sticky.
-  // If you have your own unique user identifier, please replace v4() with it.
-  const visitorCode = cookies[KAMELEOON_USER_ID] || v4();
-  // Get the siteCode from Kameleoon Platform
-  const siteCode = "YOUR_SITE_CODE";
+  if (!isInitialized) {
+    isInitialized = await client.initialize();
+  }
 
-  // Get the Kameleoon Client Configuration URL from KameleoonUtils
-  const url = KameleoonUtils.getClientConfigurationUrl(siteCode);
+  const headers = new Headers();
+  headers.set("Content-Type", "text/plain");
 
-  // Fetch config file from Kameleoon Client Configuration URL and cache it using cloudflare for given number of seconds
-  const configDataFile = await getConfigDataFile(url, 600);
-  const parsedConfigDataFile = JSON.parse(configDataFile);
-
-  // Initialize the KameleoonClient
-  const kameleoonClient = new KameleoonClient({
-    siteCode,
-    /***
-     * @param {GetClientConfigurationResultType} externalClientConfiguration - Fetched and cached client configuration from cdn
-     */
-    integrations: {
-      externalClientConfiguration: parsedConfigDataFile,
-    },
+  // -- Get the visitor code using the custom visitor code manager
+  const visitorCode = client.getVisitorCode({
+    input: event.request.headers,
+    output: headers,
   });
 
-  // Run initialize before using the methods
-  await kameleoonClient.initialize();
-
-  // Use kameleoonClient instance to access SDK methods
-  // You can refer to our developers documentation to find out more about methods
-  const variationKey = kameleoonClient.getFeatureFlagVariationKey(
+  // -- Get the feature flag variation key
+  const variationKey = client.getFeatureFlagVariationKey(
     visitorCode,
-    "YOUR_FEATURE_KEY"
+    FEATURE_KEY
   );
-  console.log(`The variationKey is ${variationKey}`);
-
-  let headers = new Headers();
-  headers.set("Content-Type", "text/plain");
-  headers.set("Set-Cookie", cookie.serialize(KAMELEOON_USER_ID, visitorCode));
 
   return new Response(
-    "Welcome to Kameleoon Starter Kit! Check logs for results",
+    "Welcome to Kameleoon Starter Kit!\n" +
+      `My visitor code is: ${visitorCode}\n` +
+      `My variation is: ${variationKey}`,
     { status: 200, headers }
   );
 }
