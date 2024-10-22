@@ -8,6 +8,7 @@ This Kameleoon Cloudflare Workers Template uses [Kameleoon NodeJS SDK][2] to pro
 
 - [Pre-requisites](#pre-requisites)
 - [Getting started](#getting-started)
+- [Examples](#examples)
 - [Commands](#commands)
 - [Technical details](#technical-details)
 - [Additional resources](#additional-resources)
@@ -33,7 +34,6 @@ npm install
 
 3. Add `account_id` in `wrangler.toml`. See: [How to find `account_id`][5]
 
-
 4. Update the following values in `src/index.ts`:
 
 - `SITE_CODE` - Site code that can be found on the [Kameleoon Platform][4].
@@ -52,6 +52,11 @@ npm start
 npm run deploy
 ```
 
+## Examples
+
+Find examples of some of the most common use cases in `examples` folder.
+To run the examples simply copy the content of the example file and paste it into `src/index.ts` file and then run `npm start`.
+
 ## Commands
 
 - `npm start` - Start the worker locally.
@@ -63,14 +68,13 @@ npm run deploy
 The core integration logic is located in `src/index.ts` file. The worker uses the [Kameleoon NodeJS SDK][2] to fetch the feature flags and experiments from the Kameleoon platform, initialize the SDK and evaluate the flags and experiments.
 
 There are also several additional files which implement external SDK dependency to make it compatible with Cloudflare Workers and grant some additional features:
+
 - `src/eventSource.ts` - `EventSource` implementation for Cloudflare Workers. Unfortunately, Cloudflare Workers do not support `EventSource` out of the box, so the implementation will just give out a warning message in the console if you try to use the unsupported [Real Time Update][10] feature.
 - `src/requester.ts` - `Requester` implementation adds an ability to cache SDK configuration providing the desired TTL.
-> Note: by default SDK will poll the configuration every `60` minutes and the `ttl` value provided in `src/index.ts` is also `60` minutes, feel free to tweak both `ttl` and [`updateInterval`][8] values.
+  > Note: by default SDK will poll the configuration every `60` minutes and the `ttl` value provided in `src/index.ts` is also `60` minutes, feel free to tweak both `ttl` and [`updateInterval`][8] values.
 - `src/visitorCodeManager.ts` - `VisitorCodeManager` implementation for Cloudflare Workers allows for smooth `getVisitorCode` operations, it reads `kameleoonVisitorCode` from request headers and if it wasn't found it generates a new one and sets it in the response headers.
 
 Error handling is omitted in the code for the sake of simplicity, however it's always a good idea to handle potential SDK errors gracefully, read more - [SDK Error Handling][9].
-
-
 
 ## Additional resources
 
