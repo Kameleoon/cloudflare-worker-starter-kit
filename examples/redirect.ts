@@ -1,7 +1,7 @@
 import { KameleoonClient } from "@kameleoon/nodejs-sdk";
-import { WorkerRequester } from "./requester";
-import { WorkerVisitorCodeManager } from "./visitorCodeManager";
-import { WorkerEventSource } from "./eventSource";
+import { WorkerRequester } from "../src/requester";
+import { WorkerVisitorCodeManager } from "../src/visitorCodeManager";
+import { WorkerEventSource } from "../src/eventSource";
 
 // -- Define constant values
 const SITE_CODE = "my_site_code";
@@ -49,14 +49,15 @@ async function handleRequest(event: FetchEvent) {
     output: headers,
   });
 
-  // -- Get the feature flag variation key
-  const variationKey = client.getFeatureFlagVariationKey(
+  // -- Get the feature flag variation
+  const variation = client.getVariation({
     visitorCode,
-    FEATURE_KEY
-  );
+    featureKey: FEATURE_KEY,
+    track: false,
+  });
 
   // -- Redirect the visitor to a specific URL if the variation key is "off"
-  if (variationKey === "off") {
+  if (variation.key === "off") {
     const destinationURL = "https://example.com";
     const statusCode = 301;
 
@@ -66,7 +67,7 @@ async function handleRequest(event: FetchEvent) {
   return new Response(
     "Welcome to Kameleoon Starter Kit!\n" +
       `My visitor code is: ${visitorCode}\n` +
-      `My variation is: ${variationKey}`,
+      `My variation key is: ${variation.key}`,
     { status: 200, headers }
   );
 }

@@ -49,16 +49,17 @@ async function handleRequest(event: FetchEvent) {
     output: headers,
   });
 
-  // -- Get the feature flag variation key
-  const variationKey = client.getFeatureFlagVariationKey(
+  // -- Get the feature flag variation
+  const variation = client.getVariation({
     visitorCode,
-    FEATURE_KEY
-  );
+    featureKey: FEATURE_KEY,
+    track: false,
+  });
 
   return new Response(
     "Welcome to Kameleoon Starter Kit!\n" +
       `My visitor code is: ${visitorCode}\n` +
-      `My variation is: ${variationKey}`,
+      `My variation key is: ${variation.key}`,
     { status: 200, headers }
   );
 }

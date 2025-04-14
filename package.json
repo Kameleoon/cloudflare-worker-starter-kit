@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "start": "wrangler dev",
+    "start:local": "wrangler dev --local",
     "deploy": "wrangler publish",
     "logs": "wrangler tail"
   },
   "dependencies": {
-    "@kameleoon/nodejs-sdk": "^4.4.1"
+    "@kameleoon/nodejs-sdk": "^5.9.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230221.0",

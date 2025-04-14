@@ -59,7 +59,8 @@ To run the examples simply copy the content of the example file and paste it int
 
 ## Commands
 
-- `npm start` - Start the worker locally.
+- `npm start` - Start the worker.
+- `npm run start:local` - Start the worker locally.
 - `npm run deploy` - Deploy the worker to Cloudflare.
 - `npm run logs` - Display the logs of the worker.
 
