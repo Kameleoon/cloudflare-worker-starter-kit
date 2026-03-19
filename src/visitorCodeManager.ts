@@ -5,12 +5,12 @@ import {
   IExternalCustomVisitorCodeManager,
 } from "@kameleoon/nodejs-sdk";
 
-// -- Custom Implementation of Kameleoon Visitor Code Manager
-//    for CloudFlare Worker
+// Persist the visitor code in cookies so the worker can read it on later
+// requests without relying on browser-specific storage.
 export class WorkerVisitorCodeManager
   implements IExternalCustomVisitorCodeManager
 {
-  // - Get the visitor code from the CloudFlare event request headers
+  // Read the visitor code from the request cookies.
   getData(params: GetDataCustomParametersType): string | null {
     const { key, input } = params;
 
@@ -24,7 +24,7 @@ export class WorkerVisitorCodeManager
     return KameleoonUtils.getCookieValue(cookieStr, key);
   }
 
-  // - Set the visitor code in the CloudFlare response headers
+  // Store the visitor code in the response cookies for future requests.
   setData(params: SetDataCustomParametersType): void {
     const { key, visitorCode, domain, maxAge, path, output } = params;
 

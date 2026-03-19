@@ -2,51 +2,52 @@
 
 > Template to run Kameleoon Experimentation and Feature Flags on [Cloudflare Workers][1].
 
-This Kameleoon Cloudflare Workers Template uses [Kameleoon NodeJS SDK][2] to provide out out-of-the-box experimentation and feature flagging on the edge.
+This starter kit uses the [Kameleoon NodeJS SDK][2] to evaluate experiments and feature flags at the edge with Cloudflare Workers.
 
 ## Contents
 
-- [Pre-requisites](#pre-requisites)
+- [Prerequisites](#prerequisites)
 - [Getting started](#getting-started)
 - [Examples](#examples)
 - [Commands](#commands)
 - [Technical details](#technical-details)
 - [Additional resources](#additional-resources)
 
-## Pre-requisites
+## Prerequisites
 
 - [Cloudflare account][3].
 - [Kameleoon account][4].
 
 ## Getting started
 
-1. Clone the github repository
+1. Clone the GitHub repository.
 
 ```sh
 git clone https://github.com/Kameleoon/cloudflare-worker-starter-kit.git
 ```
 
-2. Install node modules
+2. Install dependencies.
 
 ```sh
 npm install
 ```
 
-3. Add `account_id` in `wrangler.toml`. See: [How to find `account_id`][5]
+3. Add your `account_id` to `wrangler.toml`. See [How to find `account_id`][5].
 
 4. Update the following values in `src/index.ts`:
 
-- `SITE_CODE` - Site code that can be found on the [Kameleoon Platform][4].
-- `CLIENT_ID` and `CLIENT_SECRET` - Client ID and Client Secret that can be found in your [Kameleoon Profile][6].
-- `FEATURE_KEY` - Feature key that can be found on the [Kameleoon Feature Flag Dashboard][7].
+- `SITE_CODE` - Site code from the [Kameleoon Platform][4].
+- `CLIENT_ID` and `CLIENT_SECRET` - Client credentials from your [Kameleoon Profile][6].
+- `TRACK_IN_WORKER` - Keep this as `false` unless you intentionally want the worker to send tracking events.
+- `ENABLE_DATAFILE_REFRESH` - Enable this only when you need more aggressive SDK configuration refreshes.
 
-5. Test and debug the worker locally
+5. Run the worker locally.
 
 ```sh
 npm start
 ```
 
-6. Deploy the worker to Cloudflare
+6. Deploy the worker to Cloudflare.
 
 ```sh
 npm run deploy
@@ -54,28 +55,26 @@ npm run deploy
 
 ## Examples
 
-Find examples of some of the most common use cases in `examples` folder.
-To run the examples simply copy the content of the example file and paste it into `src/index.ts` file and then run `npm start`.
+The [`examples`](./examples) directory contains additional usage patterns.
+To try one, copy its contents into `src/index.ts` and run `npm start`.
 
 ## Commands
 
 - `npm start` - Start the worker.
-- `npm run start:local` - Start the worker locally.
 - `npm run deploy` - Deploy the worker to Cloudflare.
-- `npm run logs` - Display the logs of the worker.
+- `npm test` - Run the Vitest test suite.
+- `npm run cf-typegen` - Generate Cloudflare type definitions.
 
 ## Technical details
 
-The core integration logic is located in `src/index.ts` file. The worker uses the [Kameleoon NodeJS SDK][2] to fetch the feature flags and experiments from the Kameleoon platform, initialize the SDK and evaluate the flags and experiments.
+The core integration lives in `src/index.ts`. The worker initializes the SDK, resolves a visitor code from cookies, evaluates the current visitor against feature flags, and prints each feature flag key with its variation name.
 
-There are also several additional files which implement external SDK dependency to make it compatible with Cloudflare Workers and grant some additional features:
+There are also a few helper files that adapt the SDK to Cloudflare Workers:
 
-- `src/eventSource.ts` - `EventSource` implementation for Cloudflare Workers. Unfortunately, Cloudflare Workers do not support `EventSource` out of the box, so the implementation will just give out a warning message in the console if you try to use the unsupported [Real Time Update][10] feature.
-- `src/requester.ts` - `Requester` implementation adds an ability to cache SDK configuration providing the desired TTL.
-  > Note: by default SDK will poll the configuration every `60` minutes and the `ttl` value provided in `src/index.ts` is also `60` minutes, feel free to tweak both `ttl` and [`updateInterval`][8] values.
-- `src/visitorCodeManager.ts` - `VisitorCodeManager` implementation for Cloudflare Workers allows for smooth `getVisitorCode` operations, it reads `kameleoonVisitorCode` from request headers and if it wasn't found it generates a new one and sets it in the response headers.
+- `src/eventSource.ts` - Blocks the unsupported [real-time update][10] flow with a clear error message because Cloudflare Workers do not provide `EventSource`.
+- `src/visitorCodeManager.ts` - Stores and reads the Kameleoon visitor code from cookies so the same visitor can be recognized across requests.
 
-Error handling is omitted in the code for the sake of simplicity, however it's always a good idea to handle potential SDK errors gracefully, read more - [SDK Error Handling][9].
+Error handling is intentionally minimal to keep the starter kit focused. In production, wrap SDK initialization and variation evaluation with proper error handling. See [SDK Error Handling][9].
 
 ## Additional resources
 
