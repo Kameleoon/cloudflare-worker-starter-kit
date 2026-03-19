@@ -1,11 +1,10 @@
 import { IExternalEventSource } from "@kameleoon/nodejs-sdk";
 
-// -- Custom Implementation of Kameleoon Event Source
-//    for CloudFlare Worker
+// Cloudflare Workers do not support EventSource, so real-time configuration
+// updates are unavailable in this environment.
 export class WorkerEventSource implements IExternalEventSource {
-  // - The CloudFlare Worker does not support Real Time Updates
   public open(): void {
-    throw new Error("Real Time Updates are not supported in Cloudflare Worker");
+    throw new Error("Real-time updates are not supported in Cloudflare Workers");
   }
 
   public close(): void {}
