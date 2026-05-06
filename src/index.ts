@@ -3,8 +3,10 @@ import { KameleoonRequester } from "@kameleoon/nodejs-requester";
 import { WorkerVisitorCodeManager } from "./visitorCodeManager";
 import { WorkerEventSource } from "./eventSource";
 
-// Replace these placeholder values with your Kameleoon credentials.
+// Replace these placeholder value(s) with your Kameleoon credentials.
 const SITE_CODE = "<siteCode>";
+
+// Required only if TRACK_IN_WORKER == true
 const CLIENT_ID = "<clientID>";
 const CLIENT_SECRET = "<clientSecret>";
 
@@ -49,6 +51,7 @@ async function handleRequest(request: Request, ctx: ExecutionContext) {
     });
   }
 
+  // Initialize the client before using the methods
   if (!isInitialized) {
     isInitialized = await client.initialize();
   }

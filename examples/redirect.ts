@@ -3,11 +3,13 @@ import { KameleoonRequester } from "@kameleoon/nodejs-requester";
 import { WorkerVisitorCodeManager } from "./src/visitorCodeManager";
 import { WorkerEventSource } from "./src/eventSource";
 
-// Replace these placeholder values with your Kameleoon credentials.
+// Replace these placeholder value(s) with your Kameleoon credentials.
 const SITE_CODE = "<siteCode>";
+const FEATURE_KEY = "<featureKey>";
+
+// Required only if TRACK_IN_WORKER == true
 const CLIENT_ID = "<clientID>";
 const CLIENT_SECRET = "<clientSecret>";
-const FEATURE_KEY = "<featureKey>";
 
 // The recommended setup is to keep tracking disabled in the worker and send
 // tracking events via Engine.js instead.
@@ -50,6 +52,7 @@ async function handleRequest(request: Request, ctx: ExecutionContext) {
     });
   }
 
+  // Initialize the client before using the methods
   if (!isInitialized) {
     isInitialized = await client.initialize();
   }
